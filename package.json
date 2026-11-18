@@ -1,0 +1,44 @@
+{
+  "name": "@bkarak/firejs",
+  "version": "0.1.0",
+  "description": "FIRE/JS: DFA regular expressions for JavaScript. Patterns compile to minimal automata; matching is linear-time, leftmost-longest.",
+  "license": "Apache-2.0",
+  "author": "Vassilios Karakoidas <vassilios.karakoidas@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bkarak/firejs-oss.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "prepublishOnly": "npm run check && npm test && npm run build"
+  },
+  "keywords": [
+    "regex",
+    "regular-expression",
+    "dfa",
+    "automaton",
+    "linear-time",
+    "redos"
+  ],
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^5.9.3"
+  }
+}
