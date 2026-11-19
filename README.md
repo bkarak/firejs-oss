@@ -152,17 +152,20 @@ The generators:
   own, a transition to the next state in the layout falls through the
   `switch` into that state's block, and only the other transitions go back
   through the dispatch — JavaScript has no `goto` for the paper's threaded
-  code, so this is as close as it gets. A state with more than two ranges
-  resolves its character through a class map (one `Uint16Array` load and a
-  second `switch`); a state with one or two keeps a compare chain. Large
-  walks are emitted as a plain loop + `switch` (the threaded form compiles
-  poorly past ~24 KB of bytecode) and, past 48 KB, split into segment
+  code, so this is as close as it gets. Each state resolves its character
+  through a compare chain over its ranges. A class map (one `Uint16Array`
+  load and a second `switch`) measured slower on V8 and is off by default;
+  `jsGenerator({ classMap: true })` turns it back on. Large walks are
+  emitted as a plain loop + `switch`, since the threaded form compiles
+  poorly past about 24 KB of bytecode (32 or 48 KB for automata made mostly
+  of self-loops and chains), and past 56 KB they are split into segment
   functions that hand the state to each other, under V8's limit of 60 KB
   beyond which a function is never optimised.
-- **`js-ranges`** is the same with a compare chain in every state, kept so
-  the class map's share of the speed can be measured.
-- **`js-switch`** is the plain loop + `switch` for every size — the paper's
-  Algorithm 1 as written — kept so the threading's share can be measured.
+- **`js-ranges`** names the compare-chain walker explicitly; with the class
+  map off by default it generates the same code as `js`.
+- **`js-switch`** is the plain loop + `switch` for every size, with the
+  class map — the paper's Algorithm 1 as written — kept so the threading's
+  share can be measured.
 - **`dense`** walks a dense transition table indexed by state and character
   class — the design of the Brics `RunAutomaton` — with no code generation,
   so it runs under a Content Security Policy that forbids `eval`.
